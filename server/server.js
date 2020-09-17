@@ -1,5 +1,6 @@
 const { spawn } = require('child_process');
 const express = require('express');
+const path = require('path');
 const fs = require('fs');
 const bodyParser = require('body-parser'); 
 
@@ -16,6 +17,8 @@ const PORT = 8081;
 const app = express();
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
+const isDev = (process.argv.length === 3) && (process.argv[2] === 'dev');
 
 /**************************************************************
  * '/cmd/adb/devices/'
@@ -191,9 +194,35 @@ app.post('/cmd/adb', (req,res) => {
 //-------------------------------------------------------------
 
 
+/*MAKE SURE THIS IS THE LAST API*/
 /**************************************************************
- * TODO: middleware(app.use()) must be here under app.get().
+ * app.get('/*')
 ***************************************************************/
+if(!isDev){
+  console.log("isDev:", isDev);
+  // my server code is in ./server dir, so back the dir.
+  let dirName = __dirname.slice(0, __dirname.lastIndexOf('/'));
+
+  app.use(express.static(path.join(dirName, 'build')));
+  app.use(express.static(path.join(dirName, 'public')));
+
+  app.get('/*', function (req, res) {
+    res.sendFile(path.join(dirName, 'build', 'index.html'));
+  });
+} else {
+  //TODO: currently same as prod.
+  console.log("isDev:", isDev);
+  // my server code is in ./server dir, so back the dir.
+  let dirName = __dirname.slice(0, __dirname.lastIndexOf('/'));
+
+  app.use(express.static(path.join(dirName, 'build')));
+  app.use(express.static(path.join(dirName, 'public')));
+
+  app.get('/*', function (req, res) {
+    res.sendFile(path.join(dirName, 'build', 'index.html'));
+  });
+}
+/*MAKE SURE THIS IS THE LAST API*/
 
 
 /**************************************************************

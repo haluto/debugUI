@@ -63,6 +63,8 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "startprod": "node server/server.js",
+    "startdev": "nodemon -w server server/server.js dev",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },

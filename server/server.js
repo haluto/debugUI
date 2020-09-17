@@ -1,20 +1,27 @@
 const { spawn } = require('child_process');
 const express = require('express');
 const fs = require('fs');
+const bodyParser = require('body-parser'); 
 
-const app = express();
+
 
 // Config
 //--------------------------------------------
 const PORT = 8081;
 //--------------------------------------------
 
+/**************************************************************
+ * app
+***************************************************************/
+const app = express();
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-/**
+/**************************************************************
  * '/cmd/adb/devices/'
  * to run the "adb devices" cmd and return the output.
- */
-app.post('/cmd/adb/devices', function(req,res) {
+***************************************************************/
+app.post('/cmd/adb/devices', (req,res) => {
   //res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8',
   //                      'Access-Control-Allow-Origin':'*'});
   const process = spawn('adb', ['devices']);
@@ -54,10 +61,10 @@ app.post('/cmd/adb/devices', function(req,res) {
 });
 
 
-/**
+/**************************************************************
  * '/cmd/adb/shell/getprop'
- */
-app.post('/cmd/adb/shell/getprop', function(req,res) {
+***************************************************************/
+app.post('/cmd/adb/shell/getprop', (req,res) => {
   let shellCmd = ['shell', 'getprop'];
   if(req.query.prop) {
     console.log(`getprop: ${req.query.prop}`);
@@ -71,7 +78,7 @@ app.post('/cmd/adb/shell/getprop', function(req,res) {
   process.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
 
-    res.end(data);
+    res.write(data);
   });
 
   process.stderr.on('data', (data) => {
@@ -87,20 +94,20 @@ app.post('/cmd/adb/shell/getprop', function(req,res) {
 });
 
 
-/**
+/**************************************************************
  * '/cmd/adb/shell/setprop'
- */
+***************************************************************/
 
 
- /**
-  * '/cmd/battery/unplug'
-  */
+/**************************************************************
+ * '/cmd/battery/unplug'
+***************************************************************/
 
 
-/**
+/**************************************************************
  * '/cmd/adb/shell/input'
- */
-app.post('/cmd/adb/shell/input', function(req,res) {
+***************************************************************/
+app.post('/cmd/adb/shell/input', (req,res) => {
   let shellCmd = ['shell', 'input'];
 
   if(req.query.keyevent) {
@@ -130,12 +137,12 @@ app.post('/cmd/adb/shell/input', function(req,res) {
 });
 
 
-/**
+/**************************************************************
  * '/cmd/adb'
  * The common cmd for adb, if some cmd is not supported by this file yet,
  * then you can use this cmd.
- */
-app.post('/cmd/adb', function(req,res) {
+***************************************************************/
+app.post('/cmd/adb', (req,res) => {
   //let cmd = req.query.cmd.replace(/ /g, ',');
   let cmd = req.query.cmd;
   let shellCmd = [];
@@ -167,7 +174,7 @@ app.post('/cmd/adb', function(req,res) {
   process.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
 
-    res.end(data);
+    res.write(data);
   });
 
   process.stderr.on('data', (data) => {
@@ -181,18 +188,18 @@ app.post('/cmd/adb', function(req,res) {
   });
 
 });
-//---------------------------------------------------------
+//-------------------------------------------------------------
 
 
-/**
+/**************************************************************
  * TODO: middleware(app.use()) must be here under app.get().
- */
+***************************************************************/
 
 
-/**
+/**************************************************************
  * server
- */
-let server = app.listen(PORT, function(){
+***************************************************************/
+let server = app.listen(PORT, () => {
   let port = server.address().port;
 
   console.log(`Please visit http://localhost:${port}`);

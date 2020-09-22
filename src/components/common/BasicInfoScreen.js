@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import SideBar from './CommonComponents/SideBar';
 import DeviceChooserPanel from '../BasicInfoScreen/DeviceChooserPanel';
+import DeviceControlPanel from '../BasicInfoScreen/DeviceControlPanel';
 import '../../style/BasicInfoScreen.css';
 
 export default class BasicInfoScreen extends Component {
@@ -27,6 +28,8 @@ export default class BasicInfoScreen extends Component {
           <DeviceChooserPanel
             onDeviceSelected = {this.handleDeviceSelected}
           />
+
+          <DeviceControlPanel />
         </div>
 
       </div>

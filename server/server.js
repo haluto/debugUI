@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const bodyParser = require('body-parser'); 
 
+const screencap = require('./screencap.js');
 
 
 // Config
@@ -61,6 +62,19 @@ app.post('/cmd/adb/devices', (req,res) => {
     console.log(`Child process exit. Code: ${code}`);
     res.end('Closed');
   });
+});
+
+/**************************************************************
+ * '/cmd/adb/shell/screencap'
+***************************************************************/
+app.post('/cmd/adb/shell/screencap', (req,res) => {
+  screencap.getScreenCapImage(req, 
+    success = (filePath) => {
+      res.json({ok:'ok', info:filePath});
+    },
+    fail = (err) => {
+      res.json({ok:'error', info:err});
+    });
 });
 
 

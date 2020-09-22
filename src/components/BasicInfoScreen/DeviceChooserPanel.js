@@ -1,15 +1,20 @@
 import React from 'react';
 import { Select, Button } from 'antd';
-import {ReloadOutlined} from '@ant-design/icons';
+import { ReloadOutlined, LoadingOutlined } from '@ant-design/icons';
 import $ from 'jquery';
 
 export default class DeviceChooserPanel extends React.Component {
   state = {
     devices: [],
-    selectedDevice: ''
+    selectedDevice: '',
+    loading: false, // for loading animation.
   };
 
   getDevices = () => {
+    this.setState({
+      loading: true
+    });
+
     $.ajax({
       type: "POST",
       url: "/cmd/adb/devices",
@@ -23,10 +28,14 @@ export default class DeviceChooserPanel extends React.Component {
         }
         this.setState({
           devices: arr,
+          loading: false
         });
       },
       error: () => {
-        console.log('failed to run cmd adb devices.');
+        console.error('failed to run cmd adb devices.');
+        this.setState({
+          loading: false
+        });
       }
     });
   }
@@ -40,6 +49,11 @@ export default class DeviceChooserPanel extends React.Component {
     this.setState({
       selectedDevice: value
     });
+
+    // tell parent that user has chosen a device.
+    if (this.props.onDeviceSelected) {
+      this.props.onDeviceSelected(value);
+    }
   }
 
   handleReloadButtonClick = () => {
@@ -64,10 +78,17 @@ export default class DeviceChooserPanel extends React.Component {
       });
     }
 
+    let reloadIcon;
+    if (this.state.loading) {
+      reloadIcon = <LoadingOutlined />;
+    } else {
+      reloadIcon = <ReloadOutlined />;
+    }
+
     return (
       <div className="divice-choose-panel">
         <Button type="text" shape="circle" className="reload-button"
-                icon={<ReloadOutlined />} 
+                icon={reloadIcon} 
                 onClick={this.handleReloadButtonClick}/>
 
         <Select defaultValue="Choose a device:" onChange={this.handleDeviceSelectChange} style={{ width: 180 }}>

@@ -4,6 +4,9 @@ import DeviceChooserPanel from '../BasicInfoScreen/DeviceChooserPanel';
 import '../../style/BasicInfoScreen.css';
 
 export default class BasicInfoScreen extends Component {
+  handleDeviceSelected = (device) => {
+    console.log(`BasicInfoScreen: i know you chose ${device}`);
+  }
 
   render() {
     return (
@@ -21,7 +24,9 @@ export default class BasicInfoScreen extends Component {
 
         {/*Main area*/}
         <div className="basicInfo-area">
-          <DeviceChooserPanel />
+          <DeviceChooserPanel
+            onDeviceSelected = {this.handleDeviceSelected}
+          />
         </div>
 
       </div>

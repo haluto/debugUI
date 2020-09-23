@@ -1,4 +1,5 @@
 const { spawn } = require('child_process');
+const fs = require('fs');
 
 // TODO: I want to use an images array to cache the images.
 // but seems not work.
@@ -122,6 +123,53 @@ function getScreenCapImage(req, okCb, errCb) {
   });
 }
 
+// TODO: the png file content is not correct.
+// TODO: "adb shell screencap -p > xxx.png" is ok, but failed in spawn.
+function getScreenCapImage2(req, okCb, errCb) {
+  let info = req.body;
+  let shellCmd = [];
+  let hasError = false;
+  
+  if (info && info.device) {
+    shellCmd.push('-s', info.device);
+  }
+
+  let img = 'screen01.png';
+  shellCmd.push('shell', 'screencap', '-p');
+
+  console.log(shellCmd);
+
+  const process = spawn('adb', shellCmd);
+  process.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+
+    fs.writeFile('build/screen01.png', data, function(err, file) {
+      if (err) throw err;
+      console.log('File Saved!');
+    });
+    hasError = false;
+  });
+
+  process.stderr.on('data', (data) => {
+    console.error(`stderr: ${data}`);
+    hasError = true;
+    if(errCb) {
+      errCb(data.toString());
+    }
+  });
+
+  process.on('close', (code) => {
+    console.log(`Child process: ${shellCmd} exit. Code: ${code}`);
+    if (!hasError) {
+      if (okCb) {
+        okCb('screen01.png');
+      }
+    }
+  });
+}
+
+
 module.exports = {
   getScreenCapImage: getScreenCapImage,
+  getScreenCapImage2: getScreenCapImage2,
 };

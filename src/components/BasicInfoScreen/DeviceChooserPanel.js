@@ -86,7 +86,7 @@ export default class DeviceChooserPanel extends React.Component {
     }
 
     return (
-      <div className="divice-choose-panel">
+      <div className="device-choose-panel">
         <Button type="text" shape="circle" className="reload-button"
                 icon={reloadIcon} 
                 onClick={this.handleReloadButtonClick}/>

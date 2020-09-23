@@ -125,31 +125,42 @@ app.post('/cmd/adb/shell/getprop', (req,res) => {
  * '/cmd/adb/shell/input'
 ***************************************************************/
 app.post('/cmd/adb/shell/input', (req,res) => {
-  let shellCmd = ['shell', 'input'];
+  let shellCmd = [];
+  let info = req.body;
+  let hasError = false;
 
-  if(req.query.keyevent) {
-    shellCmd.push('keyevent', req.query.keyevent);
+  if (info && info.device) {
+    shellCmd.push('-s', info.device);
   }
-  else {
+
+  shellCmd.push('shell', 'input');
+
+  if(!info || !info.key) {
     res.end("No cmd need execute.");
     return;
+  }
+  else {
+    shellCmd.push('keyevent', info.key);
   }
 
   const process = spawn('adb', shellCmd);
   process.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
 
-    res.end(data);
+    hasError = false;
   });
 
   process.stderr.on('data', (data) => {
     console.error(`stderr: ${data}`);
-    res.end(`Cmd error: ${data}`);
+    hasError = true;
+    res.json({ok:'fail'});
   });
 
   process.on('close', (code) => {
     console.log(`Child process exit: ${shellCmd}. Code: ${code}`);
-    res.end('Closed');
+    if (!hasError) {
+      res.json({ok:'ok'});
+    }
   });
 });
 

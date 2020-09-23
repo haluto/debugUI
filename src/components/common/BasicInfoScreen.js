@@ -5,8 +5,14 @@ import DeviceControlPanel from '../BasicInfoScreen/DeviceControlPanel';
 import '../../style/BasicInfoScreen.css';
 
 export default class BasicInfoScreen extends Component {
+  state = {
+    selectedDevice: '',
+  };
+
   handleDeviceSelected = (device) => {
-    console.log(`BasicInfoScreen: i know you chose ${device}`);
+    this.setState({
+      selectedDevice: device
+    });
   }
 
   render() {
@@ -29,7 +35,9 @@ export default class BasicInfoScreen extends Component {
             onDeviceSelected = {this.handleDeviceSelected}
           />
 
-          <DeviceControlPanel />
+          <DeviceControlPanel 
+            selectedDevice = {this.state.selectedDevice}
+          />
         </div>
 
       </div>

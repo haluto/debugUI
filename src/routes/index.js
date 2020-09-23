@@ -11,6 +11,7 @@ class MRoute extends Component {
       <Router history={history}>
         <Switch>
           <Route exact path="/" component={App}/>
+          <Route path="/debugUI" component={App}/>
           <Route component={NoMatch}/>
         </Switch>
       </Router>

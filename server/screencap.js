@@ -111,7 +111,8 @@ function getScreenCapImage(req, okCb, errCb) {
       pullImage(req,
         (filePath) => {
           if(okCb) {
-            okCb(filePath);
+            // here need '/', because the frontend may not in '/' path.
+            okCb(`/${filePath}`);
           }
         },
         (errStr) => {

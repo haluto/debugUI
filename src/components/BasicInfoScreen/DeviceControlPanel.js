@@ -59,6 +59,7 @@ export default class DeviceControlPanel extends React.Component {
       data: data,
       success: (res) => {
         if (res.ok === 'ok') {
+          console.log(`get screen image: ${res.info}`);
           this.setState({
             imageSrc: res.info,
             loading: false

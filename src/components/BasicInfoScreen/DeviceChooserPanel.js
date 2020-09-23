@@ -54,6 +54,10 @@ export default class DeviceChooserPanel extends React.Component {
     if (this.props.onDeviceSelected) {
       this.props.onDeviceSelected(value);
     }
+
+    // tell other screens the selected device.
+    let json = {device: value};
+    localStorage.setItem("debugUI_selected_device", JSON.stringify(json));
   }
 
   handleReloadButtonClick = () => {
@@ -62,6 +66,10 @@ export default class DeviceChooserPanel extends React.Component {
 
   componentDidMount = () => {
     this.getDevices();
+
+    // Each time reload the page, remove the selectedDevice in localstorage.
+    let json = {device: null};
+    localStorage.setItem("debugUI_selected_device", JSON.stringify(json));
   }
 
   render() {

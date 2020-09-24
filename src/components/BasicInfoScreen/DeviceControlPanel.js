@@ -12,7 +12,6 @@ export default class DeviceControlPanel extends React.Component {
     imageSrc: null,
     loading: false, // for loading animation.
   };
-  continuousDisplay = false;
 
   handleReloadButtonClick = () => {
     this.getScreen();
@@ -42,6 +41,18 @@ export default class DeviceControlPanel extends React.Component {
     });
   }
 
+  handleLoadImage = (imgSrc) => {
+    let img = new Image();
+    img.src = imgSrc;
+
+    img.onload = () => {
+      this.setState({
+        imageSrc: img.src,
+        loading: false
+      });
+    }
+  }
+
   getScreen = () => {
     this.setState({
       loading: true
@@ -60,16 +71,7 @@ export default class DeviceControlPanel extends React.Component {
       success: (res) => {
         if (res.ok === 'ok') {
           console.log(`get screen image: ${res.info}`);
-          this.setState({
-            imageSrc: res.info,
-            loading: false
-          });
-        }
-        if (this.continuousDisplay) {
-          setTimeout(() => {
-            this.getScreen();
-          }, 1000);
-          
+          this.handleLoadImage(res.info);
         }
       },
       error: () => {
@@ -109,7 +111,7 @@ export default class DeviceControlPanel extends React.Component {
         </div>
 
         <div className="device-control-image">
-          <img ref="imgElement" src={this.state.imageSrc} alt='' width='360' height='720' />
+          <img ref="imgElement" src={`${this.state.imageSrc}?t=${new Date().getTime()}`} alt='' width='360' height='720' />
         </div>
         
       </div>

@@ -5,6 +5,7 @@ const fs = require('fs');
 const bodyParser = require('body-parser'); 
 
 const screencap = require('./screencap.js');
+const battery = require('./battery.js');
 
 
 // Config
@@ -75,6 +76,58 @@ app.post('/cmd/adb/shell/screencap', (req,res) => {
     fail = (err) => {
       res.json({ok:'error', info:err});
     });
+});
+
+
+/**************************************************************
+ * '/cmd/battery/batterysaver'
+***************************************************************/
+// I know it's not beautiful to make get/set in one "post". but won't fix.
+app.post('/cmd/battery/batterysaver', (req,res) => {
+  if (req.body && req.body.op == 'get') {
+    battery.getBatterySaver(req,
+      (value) => {
+        res.json({ok:'ok', value: value});
+      },
+      () => {
+        res.json({ok:'error', value: "Server error"});
+      });
+  } else if (req.body && req.body.op == 'set' && (req.body.value==1 || req.body.value==0) ) {
+    battery.setBatterySaver(req,
+      (value) => {
+        res.json({ok:'ok', value: value});
+      },
+      () => {
+        res.json({ok:'error', value: "Server error"});
+      });
+  } else {
+    res.json({ok:'error', value: "Invalid post body"});
+  }
+});
+
+/**************************************************************
+ * '/cmd/battery/charging'
+***************************************************************/
+app.post('/cmd/battery/charging', (req,res) => {
+  if (req.body && req.body.op == 'get') {
+    battery.getCharging(req,
+      (value) => {
+        res.json({ok:'ok', value: value});
+      },
+      () => {
+        res.json({ok:'error', value: "Server error"});
+      });
+  } else if (req.body && req.body.op == 'set' && (req.body.value==1 || req.body.value==0) ) {
+    battery.setCharging(req,
+      (value) => {
+        res.json({ok:'ok', value: value});
+      },
+      () => {
+        res.json({ok:'error', value: "Server error"});
+      });
+  } else {
+    res.json({ok:'error', value: "Invalid post body"});
+  }
 });
 
 

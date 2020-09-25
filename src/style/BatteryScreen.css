@@ -1,6 +1,8 @@
 :root {
   --head-bar-height: 40px;
-  --sidebar-width: 80px;  
+  --sidebar-width: 80px;
+
+  --battery-info-panel-width: 300px;
 }
 
 .battery-screen {
@@ -37,4 +39,31 @@ Main area.
   height: 100%;
   padding-top: var(--head-bar-height);
   padding-left: var(--sidebar-width);
+}
+
+
+.battery-info-panel {
+  width: var(--battery-info-panel-width);
+  margin-top: 5px;
+  margin-left: 5px;
+}
+.battery-info-panel-item {
+  width: var(--battery-info-panel-width);
+  height: 40px;
+  
+  border:1px solid rgb(240, 236, 236);
+}
+.battery-info-panel-item-title {
+  height: 100%;
+  display: flex;
+  float: left;
+  align-items: center;
+  margin-left: 5px;
+}
+.battery-info-panel-item-icon {
+  height: 100%;
+  display: flex;
+  float: right;
+  align-items: center;
+  margin-right: 5px;
 }

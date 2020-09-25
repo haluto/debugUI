@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import SideBar from './CommonComponents/SideBar';
+import BatteryInfoPanel from '../BatteryScreen/BatteryInfoPanel';
 import '../../style/BatteryScreen.css';
 
 export default class BatteryScreen extends Component {
@@ -18,7 +19,7 @@ export default class BatteryScreen extends Component {
 
         {/*Main area*/}
         <div className="battery-area">
-          Battery Screen
+          <BatteryInfoPanel />
         </div>
       </div>
     );
